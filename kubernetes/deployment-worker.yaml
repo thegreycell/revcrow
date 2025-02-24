@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crawler-worker
+  labels:
+    app: crawler-worker
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: crawler-worker
+  template:
+    metadata:
+      labels:
+        app: crawler-worker
+    spec:
+      containers:
+        - name: crawler-worker
+          image: your-docker-repo/my-crawler:latest
+          command: ["node", "extractWorker.js"]
+          env:
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: crawler-secrets
+                  key: mongo-uri
+          volumeMounts:
+            - name: config-volume
+              mountPath: /app/config
+      volumes:
+        - name: config-volume
+          configMap:
+            name: crawler-config

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crawler-config
+data:
+  worker.config.json: |
+    {
+      "numWorkers": 5,
+      "initialDelay": 1000,
+      "maxDelay": 16000,
+      "maxJobsPerInterval": 60,
+      "intervalMs": 60000
+    }
