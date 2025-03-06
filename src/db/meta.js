@@ -1,7 +1,7 @@
 // meta.js
 const { MongoClient } = require('mongodb');
 const url = 'mongodb://localhost:27017'; // adjust as needed
-const dbName = 'myCrawlerDB';
+const dbName = 'revcrowDB';
 const client = new MongoClient(url);
 
 async function connectDB() {

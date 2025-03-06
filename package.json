@@ -1,21 +1,28 @@
 {
-    "name": "my-crawler",
-    "version": "1.0.0",
-    "description": "Production-ready review crawler with plugin support, reliable task queue, and Kubernetes deployment",
-    "main": "api.js",
-    "scripts": {
-      "start": "node src/api/api.js",
-      "taskProcessor": "node taskProcessor.js",
-      "worker": "node extractWorker.js"
-    },
-    "dependencies": {
-      "csv-parser": "^3.0.0",
-      "express": "^4.18.2",
-      "mongodb": "^4.12.1",
-      "moment": "^2.29.4",
-      "multer": "^1.4.5",
-      "puppeteer": "^20.0.0",
-      "redis": "^4.6.7"
-    }
-  }
-  
+  "name": "revcrow",
+  "version": "1.0.0",
+  "description": "Production-ready review crawler with plugin support, reliable task queue, and Kubernetes deployment",
+  "main": "api.js",
+  "scripts": {
+    "start": "node src/api/api.js | tee -a /app/logs/server.log",
+    "build": "cd src/ui && npm run build",
+    "dev": "nodemon --watch src/api --watch src/db src/api/api.js  | tee -a /app/logs/server.log",
+    "ui": "cd src/ui && npm start | tee -a /app/logs/ui.log",
+    "dev:all": "concurrently \"npm run dev\" \"npm run ui\"",
+    "install-all": "npm install && cd src/ui && npm install"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0",
+    "express": "^4.18.2",
+    "moment": "^2.29.4",
+    "mongodb": "^4.12.1",
+    "multer": "1.4.5-lts.1",
+    "puppeteer": "^22.8.2",
+    "redis": "^4.6.7"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "nodemon": "^3.0.2"
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
+}

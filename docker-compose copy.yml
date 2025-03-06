@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/myCrawlerDB
+      - REDIS_URI=redis://redis:6379
+    command: npm start
+    restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    restart: always
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    restart: always
+
+  task-processor:
+    build: .
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/myCrawlerDB
+      - REDIS_URI=redis://redis:6379
+    command: node taskProcessor.js
+    restart: always
+
+  extract-worker:
+    build: .
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - MONGODB_URI=mongodb://mongodb:27017/myCrawlerDB
+      - REDIS_URI=redis://redis:6379
+    command: npm run worker
+    deploy:
+      replicas: 3
+    restart: always
+
+volumes:
+  mongodb_data:
